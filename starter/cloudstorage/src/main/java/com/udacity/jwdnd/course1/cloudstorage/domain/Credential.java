@@ -1,6 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.domain;
 
-public class Credentials {
+public class Credential {
 
     private String userName;
     private Integer userId;
@@ -9,7 +9,7 @@ public class Credentials {
     private String key;
     private String password;
 
-    public Credentials(String userName, Integer userId, Integer credentialId, String url, String key, String password) {
+    public Credential(String userName, Integer userId, Integer credentialId, String url, String key, String password) {
         this.userName = userName;
         this.userId = userId;
         this.credentialId = credentialId;
