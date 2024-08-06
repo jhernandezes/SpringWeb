@@ -1,26 +1,23 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.domain.File;
+import com.udacity.jwdnd.course1.cloudstorage.domain.User;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 import java.io.IOException;
-import java.sql.Blob;
-import java.sql.SQLException;
+import java.util.List;
 
 @Controller
-@RequestMapping("/upload")
+@RequestMapping("/files")
 public class FileController {
 
     private final FileService fileService;
@@ -31,8 +28,24 @@ public class FileController {
         this.userMapper = userMapper;
     }
 
+    @GetMapping
+    public String getFiles(Model model, Authentication authentication) {
+
+        String username = authentication.getName();
+
+        User user = this.userMapper.getUser(username);
+
+        List<File> files = fileService.getAllFiles(user);
+
+        model.addAttribute("files", files);
+
+        System.out.println("Total Files: " + files.size());
+
+        return "home";
+    }
+
     @PostMapping
-    public String handleFileUpload(Authentication authentication, @RequestParam("file") MultipartFile multipartFile) {
+    public String handleFileUpload(Authentication authentication, @RequestParam("fileUpload") MultipartFile multipartFile, Model model)  {
 
         String username = authentication.getName();
 
@@ -40,30 +53,28 @@ public class FileController {
 
         File file = new File();
 
+        String fileName = multipartFile.getOriginalFilename();
+        String contentType = multipartFile.getContentType();
+        long fileSize = multipartFile.getSize();
+        byte[] fileData;
         try {
-
-            String fileName = multipartFile.getOriginalFilename();
-            String contentType = multipartFile.getContentType();
-            long fileSize = multipartFile.getSize();
-            Blob fileData = new SerialBlob(multipartFile.getBytes());
-
-
-            file.setFileName(fileName);
-            file.setFileSize(String.valueOf(fileSize));
-            file.setContentType(contentType);
-            file.setBlob(fileData);
-            file.setUserId(userId);
-
-        } catch (SerialException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            fileData = multipartFile.getBytes();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        this.fileService.addFile(file);
 
-        return "result";
+        file.setFileName(fileName);
+        file.setFileSize(String.valueOf(fileSize));
+        file.setContentType(contentType);
+        file.setBlob(fileData);
+        file.setUserId(userId);
+
+
+        this.fileService.addFile(file);
+        model.addAttribute("files", file);
+
+        return "redirect:/home";
     }
+
 }
