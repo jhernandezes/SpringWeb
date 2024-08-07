@@ -1,24 +1,24 @@
 package com.udacity.jwdnd.course1.cloudstorage.domain;
 
 public class Note {
-    private Integer noteID;
+    private Integer noteId;
     private String noteTitle;
     private String noteDescription;
-    private int userID;
+    private Integer userId;
 
-    public Note(Integer noteID, String noteTitle, String noteDescription, int userID) {
-        this.noteID = noteID;
+    public Note(Integer noteId, String noteTitle, String noteDescription, Integer userId) {
+        this.noteId = noteId;
         this.noteTitle = noteTitle;
         this.noteDescription = noteDescription;
-        this.userID = userID;
+        this.userId = userId;
     }
 
-    public Integer getNoteID() {
-        return noteID;
+    public Integer getNoteId() {
+        return noteId;
     }
 
-    public void setNoteID(Integer noteID) {
-        this.noteID = noteID;
+    public void setNoteId(Integer noteId) {
+        this.noteId = noteId;
     }
 
     public String getNoteTitle() {
@@ -37,11 +37,11 @@ public class Note {
         this.noteDescription = noteDescription;
     }
 
-    public int getUserID() {
-        return userID;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

@@ -1,53 +1,55 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
-import com.udacity.jwdnd.course1.cloudstorage.domain.File;
 import com.udacity.jwdnd.course1.cloudstorage.domain.Note;
 import com.udacity.jwdnd.course1.cloudstorage.domain.User;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
-import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NotesService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/home")
-public class HomeController {
+@RequestMapping("/notes")
+public class NoteController {
 
-    private final FileService fileService;
+    private final UserMapper userMapper;
     private final NotesService notesService;
-    private UserMapper userMapper;
 
-    public HomeController(FileService fileService, UserMapper userMapper, NotesService notesService) {
-        this.fileService = fileService;
-        this.userMapper = userMapper;
+    public NoteController(NotesService notesService, UserMapper userMapper) {
         this.notesService = notesService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping
-    public String home(Note noteUpload, Model model, Authentication authentication) {
+    public String getNotes(Note noteUpload, Model model, Authentication authentication) {
 
         String username = authentication.getName();
+        User user = userMapper.getUser(username);
 
-        User user = this.userMapper.getUser(username);
-
-        List<File> files = fileService.getAllFiles(user);
         List<Note> notes = notesService.getAllNotes(user);
-
-        model.addAttribute("files", files);
         model.addAttribute("notes", notes);
-        model.addAttribute("noteUpload", noteUpload);
 
-        System.out.println("Total Files: " + files.size());
-        System.out.println("Total Notes: " + files.size());
-
+        System.out.println(notes);
 
         return "home";
+
     }
 
+    @PostMapping
+    public String handleNoteUpload(Note noteUpload, Authentication authentication, Model model) {
 
+        String username = authentication.getName();
+        Integer userId = userMapper.getUser(username).getUserId();
+
+        noteUpload.setUserId(userId);
+        notesService.addNote(noteUpload);
+        model.addAttribute("notes", noteUpload);
+
+        return "redirect:/home";
+    }
 }
