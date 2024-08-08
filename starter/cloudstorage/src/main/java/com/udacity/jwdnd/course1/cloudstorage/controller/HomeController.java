@@ -1,9 +1,11 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.domain.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.domain.File;
 import com.udacity.jwdnd.course1.cloudstorage.domain.Note;
 import com.udacity.jwdnd.course1.cloudstorage.domain.User;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
+import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.services.NotesService;
 import org.springframework.security.core.Authentication;
@@ -20,16 +22,18 @@ public class HomeController {
 
     private final FileService fileService;
     private final NotesService notesService;
+    private final CredentialService credentialService;
     private UserMapper userMapper;
 
-    public HomeController(FileService fileService, UserMapper userMapper, NotesService notesService) {
+    public HomeController(FileService fileService, UserMapper userMapper, NotesService notesService, CredentialService credentialService) {
         this.fileService = fileService;
         this.userMapper = userMapper;
         this.notesService = notesService;
+        this.credentialService = credentialService;
     }
 
     @GetMapping
-    public String home(Note noteUpload, Model model, Authentication authentication) {
+    public String home(Model model, Authentication authentication, Note noteUpload, Credential credentialUpload) {
 
         String username = authentication.getName();
 
@@ -37,14 +41,14 @@ public class HomeController {
 
         List<File> files = fileService.getAllFiles(user);
         List<Note> notes = notesService.getAllNotes(user);
+        List<Credential> credentialList = credentialService.getAllCredentials(user);
 
         model.addAttribute("files", files);
         model.addAttribute("notes", notes);
+        model.addAttribute("credentialList", credentialList);
+
         model.addAttribute("noteUpload", noteUpload);
-
-        System.out.println("Total Files: " + files.size());
-        System.out.println("Total Notes: " + files.size());
-
+        model.addAttribute("credentialUpload", credentialUpload);
 
         return "home";
     }

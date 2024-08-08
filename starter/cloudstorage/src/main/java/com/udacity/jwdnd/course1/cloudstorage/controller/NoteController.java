@@ -26,7 +26,7 @@ public class NoteController {
     }
 
     @GetMapping
-    public String getNotes(Note noteUpload, Model model, Authentication authentication) {
+    public String getNotes(Model model, Authentication authentication) {
 
         String username = authentication.getName();
         User user = userMapper.getUser(username);
