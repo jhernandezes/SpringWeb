@@ -43,6 +43,11 @@ public class HomeController {
         List<Note> notes = notesService.getAllNotes(user);
         List<Credential> credentialList = credentialService.getAllCredentials(user);
 
+        // Decrypt password for view
+        for (Credential credential : credentialList) {
+            credential.setPassword(credentialService.decryptPassword(credential));
+        }
+
         model.addAttribute("files", files);
         model.addAttribute("notes", notes);
         model.addAttribute("credentialList", credentialList);

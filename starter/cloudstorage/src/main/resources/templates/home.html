@@ -140,9 +140,9 @@
                                         <button type="button" class="btn btn-success"
                                         th:attr="onclick=|showCredentialModal(
                                         ${credential.credentialid},
-                                        ${credential.url},
-                                        ${credential.username} ,
-                                        ${credential.password})|">Edit</button>
+                                        '${credential.url}',
+                                        '${credential.username}',
+                                        '${credential.password}')|">Edit</button>
 
                                         <a class="btn btn-danger" id="delete-btn-credential" th:href="@{/credentials/delete/{credentialId} (credentialId = ${credential.credentialid})}">Delete</a>
                                     </td>

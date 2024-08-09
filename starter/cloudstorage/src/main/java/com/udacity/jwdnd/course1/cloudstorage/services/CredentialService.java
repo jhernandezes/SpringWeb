@@ -23,6 +23,8 @@ public class CredentialService {
     }
 
     public void updateCredential(Credential credential) {
+        credential.setKey(this.encryptionService.generateKey());
+        credential.setPassword(this.encryptionService.encryptValue(credential.getPassword(), credential.getKey()));
         credentialMapper.updateCredential(credential);
     }
 
