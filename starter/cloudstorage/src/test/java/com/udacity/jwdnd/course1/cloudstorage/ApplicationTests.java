@@ -3,16 +3,19 @@ package com.udacity.jwdnd.course1.cloudstorage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApplicationTests {
 
@@ -21,6 +24,18 @@ class ApplicationTests {
 
 	private WebDriver driver;
 
+	private String baseUrl;
+
+	private String firstname = "Bartholomew";
+	private String lastname = "Simpson";
+	private String username = "Bart";
+	private String password = "Matt";
+
+	private SignUpPage signUpPage;
+	private LoginPage loginPage;
+	private HomePage homePage;
+
+
 	@BeforeAll
 	static void beforeAll() {
 		WebDriverManager.chromedriver().setup();
@@ -28,7 +43,19 @@ class ApplicationTests {
 
 	@BeforeEach
 	public void beforeEach() {
+
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless");
+		options.addArguments("--disable-gpu");
+		options.addArguments("--no-sandbox");
+		options.addArguments("--disable-dev-shm-usage");
+		options.addArguments("--remote-debugging-port=9222");
+
 		this.driver = new ChromeDriver();
+		this.baseUrl = "http://localhost:" + port;
+		this.signUpPage = new SignUpPage(driver);
+		this.loginPage = new LoginPage(driver);
+		this.homePage = new HomePage(driver);
 	}
 
 	@AfterEach
@@ -41,8 +68,27 @@ class ApplicationTests {
 	@Test
 	public void getLoginPage() {
 		driver.get("http://localhost:" + this.port + "/login");
-		Assertions.assertEquals("Login", driver.getTitle());
+		assertEquals("Login", driver.getTitle());
 	}
+
+	@Test
+	@Order(1)
+	public void testValidLoginAndLogout() {
+
+		driver.get(baseUrl + "/login");
+		assertEquals("Login", driver.getTitle());
+
+		driver.get(baseUrl + "/signup");
+		assertEquals("Sign Up", driver.getTitle());
+
+		signUpPage.signupAction(firstname, lastname, username, password);
+
+		loginPage.loginAction(username, password);
+
+		driver.get(baseUrl + "/home");
+		assertEquals("Home", driver.getTitle());
+	}
+	
 
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
@@ -136,7 +182,7 @@ class ApplicationTests {
 		doMockSignUp("Redirection","Test","RT","123");
 		
 		// Check if we have been redirected to the log in page.
-		Assertions.assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
+		assertEquals("http://localhost:" + this.port + "/login", driver.getCurrentUrl());
 	}
 
 	/**
