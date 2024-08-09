@@ -18,7 +18,15 @@ public class FileService {
     }
 
     public int addFile(File file) {
-        return fileMapper.addFile(new File(null , file.getFileName(), file.getContentType(), file.getFileSize(), file.getUserId(), file.getBlob()));
+        return fileMapper.addFile(new File(null , file.getFileName(), file.getContentType(), file.getFileSize(), file.getUserId(), file.getFiledata()));
+    }
+
+    public File getFile(String filename, Integer userId){
+        return this.fileMapper.getFile(filename, userId);
+    }
+
+    public void deleteFile(String filename, Integer userId){
+        fileMapper.deleteFileByFileName(filename, userId);
     }
 
     public List<File> getAllFiles(User user) {

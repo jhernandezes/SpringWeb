@@ -51,8 +51,8 @@
                                 <tbody>
                                 <tr th:each="uploadFile : ${files}">
                                     <td>
-                                        <a target="_blank" class="btn btn-success">View</a>
-                                        <a  class="btn btn-danger">Delete</a>
+                                        <a target="_blank" class="btn btn-success" th:href="@{files/view/{fileName} (fileName = ${uploadFile.getFileName()})}">View</a>
+                                        <a class="btn btn-danger" th:href="@{/files/delete/{fileName} (fileName = ${uploadFile.fileName})}">Delete</a>
                                     </td>
                                     <th scope="row" th:text="${uploadFile.fileName}">ExampleFile.txt</th>
                                 </tr>

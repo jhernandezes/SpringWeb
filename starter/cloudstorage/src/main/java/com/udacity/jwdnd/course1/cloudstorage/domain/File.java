@@ -6,15 +6,15 @@ public class File {
     private String contentType;
     private String fileSize;
     private Integer userId;
-    private byte[] blob;
+    private byte[] filedata;
 
-    public File(Integer fileId, String fileName, String contentType, String fileSize, Integer userId, byte[] blob) {
+    public File(Integer fileId, String fileName, String contentType, String fileSize, Integer userId, byte[] filedata) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.contentType = contentType;
         this.fileSize = fileSize;
         this.userId = userId;
-        this.blob = blob;
+        this.filedata = filedata;
     }
 
     public File() {
@@ -60,11 +60,11 @@ public class File {
         this.userId = userId;
     }
 
-    public byte[] getBlob() {
-        return blob;
+    public byte[] getFiledata() {
+        return filedata;
     }
 
-    public void setBlob(byte[] blob) {
-        this.blob = blob;
+    public void setFiledata(byte[] filedata) {
+        this.filedata = filedata;
     }
 }
