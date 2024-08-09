@@ -73,7 +73,7 @@ class ApplicationTests {
 
 	@Test
 	@Order(1)
-	public void testValidLoginAndLogout() {
+	public void testLogin() {
 
 		driver.get(baseUrl + "/login");
 		assertEquals("Login", driver.getTitle());
@@ -88,7 +88,28 @@ class ApplicationTests {
 		driver.get(baseUrl + "/home");
 		assertEquals("Home", driver.getTitle());
 	}
+
+	@Test
+	@Order(2)
+	public void testLogout() {
+
+		driver.get(baseUrl + "/login");
+		assertEquals("Login", driver.getTitle());
+
+		driver.get(baseUrl + "/signup");
+		assertEquals("Sign Up", driver.getTitle());
+
+		signUpPage.signupAction(firstname, lastname, username, password);
+
+		loginPage.loginAction(username, password);
+
+		homePage.logoutAction();  // logout action
+		assertEquals(baseUrl + "/login", driver.getCurrentUrl());
+
+	}
+
 	
+
 
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
