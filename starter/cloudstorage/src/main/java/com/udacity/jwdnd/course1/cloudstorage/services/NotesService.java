@@ -20,6 +20,14 @@ public class NotesService {
         return noteMapper.getNotesFromUser(user.getUserId());
     }
 
+    public void deleteNote(String noteTitle) {
+        noteMapper.deleteNoteByNoteTitle(noteTitle);
+    }
+
+    public void updateNote(Note note) {
+        noteMapper.updateNotel(note);
+    }
+
     public int addNote(Note note) {
         return noteMapper.addNote(note);
     }

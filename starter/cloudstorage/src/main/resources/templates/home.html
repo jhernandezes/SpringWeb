@@ -77,12 +77,16 @@
                                 <tbody>
                                     <tr th:each="uploadNote : ${notes}">
                                         <td>
-                                            <button type="button" class="btn btn-success">Edit</button>
-                                            <a class="btn btn-danger">Delete</a>
+                                            <button type="button" class="btn btn-success"
+                                                    th:attr="onclick=|showNoteModal(
+                                             ${uploadNote.noteId},
+                                            '${uploadNote.noteTitle}',
+                                            '${uploadNote.noteDescription}')|">Edit</button>
+
+                                            <a class="btn btn-danger" th:href="@{/notes/delete/{noteTitle} (noteTitle = ${uploadNote.noteTitle})}">Delete</a>
                                         </td>
                                         <th scope="row" th:text="${uploadNote.getNoteTitle()}">Example Note Title</th>
                                         <td th:text="${uploadNote.getNoteDescription()}">Example Note Description</td>
-
                                     </tr>
                                 </tbody>
                             </table>

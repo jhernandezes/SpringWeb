@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -40,6 +41,12 @@ public class NoteController {
 
     }
 
+    @GetMapping("/delete/{noteTitle}")
+    public String deleteNote(@PathVariable("noteTitle") String noteTitle, Model model, Authentication authentication) {
+        notesService.deleteNote(noteTitle);
+        return "redirect:/home";
+    }
+
     @PostMapping
     public String handleNoteUpload(Note noteUpload, Authentication authentication, Model model) {
 
@@ -47,8 +54,14 @@ public class NoteController {
         Integer userId = userMapper.getUser(username).getUserId();
 
         noteUpload.setUserId(userId);
-        notesService.addNote(noteUpload);
-        model.addAttribute("notes", noteUpload);
+
+        boolean newNote = noteUpload.getNoteId() == null;
+
+        if (newNote) {
+            notesService.addNote(noteUpload);
+            model.addAttribute("notes", noteUpload);
+        }else
+            notesService.updateNote(noteUpload);
 
         return "redirect:/home";
     }

@@ -37,12 +37,7 @@ public class CredentialController {
 
     @GetMapping("/delete/{credentialId}")
     public String deleteCredential(@PathVariable("credentialId") Integer credentialId, Authentication authentication, Model model) {
-
-        String username = authentication.getName();
-        User user = this.userMapper.getUser(username);
-
         credentialService.deleteCredential(credentialId);
-
         return "redirect:/home";
     }
 
@@ -60,7 +55,6 @@ public class CredentialController {
         else {
             credentialService.addCredential(credentialUpload);
             model.addAttribute("credentialList", credentialUpload);
-
         }
 
         model.addAttribute("credential", credentialUpload);
