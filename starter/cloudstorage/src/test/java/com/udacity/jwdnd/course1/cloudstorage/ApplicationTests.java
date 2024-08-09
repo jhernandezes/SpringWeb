@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.File;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,6 +35,7 @@ class ApplicationTests {
 	private SignUpPage signUpPage;
 	private LoginPage loginPage;
 	private HomePage homePage;
+	private NotePage notePage;
 
 
 	@BeforeAll
@@ -108,7 +110,88 @@ class ApplicationTests {
 
 	}
 
-	
+	@Test
+	@Order(3)
+	public void testCreateNote(){
+		driver.get(baseUrl + "/signup");
+		signUpPage.signupAction(firstname, lastname, username, password);
+
+		driver.get(baseUrl + "/login");
+		loginPage.loginAction(username, password);
+
+		driver.get(baseUrl + "/home");
+		WebElement webElement = driver.findElement(By.id("nav-notes-tab"));
+		webElement.click();
+		notePage.addNewNoteAction(driver,"El Quijote", "Best book ever", webElement);
+
+		driver.get(baseUrl + "/home");
+		driver.findElement(By.id("nav-notes-tab")).click();
+		assertEquals("El Quijote", notePage.getList(driver).get(0));
+		assertEquals("Best book ever", notePage.getList(driver).get(1));
+	}
+
+	@Test
+	@Order(4)
+	public void testUpdateNote(){
+		driver.get(baseUrl + "/signup");
+		signUpPage.signupAction(firstname, lastname, username, password);
+
+		driver.get(baseUrl + "/login");
+		loginPage.loginAction(username, password);
+
+		driver.get(baseUrl + "/home");
+		WebElement webElement = driver.findElement(By.id("nav-notes-tab"));
+		webElement.click();
+		notePage.addNewNoteAction(driver,"El Quijote", "Best book ever", webElement);
+
+		driver.get(baseUrl + "/home");
+		driver.findElement(By.id("nav-notes-tab")).click();
+		assertEquals("El Quijote", notePage.getList(driver).get(0));
+		assertEquals("Best book ever", notePage.getList(driver).get(1));
+
+		driver.get(baseUrl + "/home");
+		driver.findElement(By.id("nav-notes-tab")).click();
+		notePage.editNoteAction(driver, "La Celestina", "Pio Baroja", webElement);
+
+		driver.get(baseUrl + "/home");
+		List<String> updatedList = notePage.getList(driver);
+		assertEquals("La Celestina", updatedList.get(0));
+		assertEquals("Pio Baroja", updatedList.get(1));
+
+	}
+
+	@Test
+	@Order(5)
+	public void testDeleteNote(){
+
+		WebDriverWait wait = new WebDriverWait(driver, 20);
+
+		driver.get(baseUrl + "/signup");
+		signUpPage.signupAction(firstname, lastname, username, password);
+
+		driver.get(baseUrl + "/login");
+		loginPage.loginAction(username, password);
+
+		driver.get(baseUrl + "/home");
+		WebElement webElement = driver.findElement(By.id("nav-notes-tab"));
+		webElement.click();
+		notePage.addNewNoteAction(driver,"El Quijote", "Best book ever", webElement);
+
+		driver.get(baseUrl + "/home");
+		driver.findElement(By.id("nav-notes-tab")).click();
+		assertEquals("El Quijote", notePage.getList(driver).get(0));
+		assertEquals("Best book ever", notePage.getList(driver).get(1));
+
+		driver.get(baseUrl + "/home");
+		driver.findElement(By.id("nav-notes-tab")).click();
+		notePage.deleteNoteAction(driver, webElement);
+
+		driver.get(baseUrl + "/home");
+		wait.until(driver -> driver.findElement(By.id("nav-notes-tab"))).click();
+		assertEquals(0, this.notePage.getSizeOfNoteList());
+
+	}
+
 
 
 	/**

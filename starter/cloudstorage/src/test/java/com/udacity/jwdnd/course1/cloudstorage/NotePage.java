@@ -61,7 +61,7 @@ public class NotePage {
         wait.until(ExpectedConditions.elementToBeClickable(this.saveNoteButton)).click();
     }
 
-    public List<String> getListOfNoteElements(WebDriver driver){
+    public List<String> getList(WebDriver driver){
         WebDriverWait wait = new WebDriverWait(driver, 7);
         try {
             Thread.sleep(1000);
