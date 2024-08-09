@@ -12,7 +12,7 @@
         <div class="container">
             <div id="logoutDiv">
                 <form action="#"  th:action="@{/logout}" method="POST">
-                    <button type="submit" class="btn btn-secondary float-right">Logout</button>
+                    <button id="logoutButton" type="submit" class="btn btn-secondary float-right">Logout</button>
                 </form>
             </div>
             <div id="contentDiv" style="clear: right;">
@@ -61,7 +61,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-notes" role="tabpanel" aria-labelledby="nav-notes-tab">
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
+                        <button style="margin: 0.25em;" id="addNoteButton" type="button" class="btn btn-info float-right" onclick="showNoteModal()">
                             + Add a New Note
                         </button>
 
@@ -77,16 +77,16 @@
                                 <tbody>
                                     <tr th:each="uploadNote : ${notes}">
                                         <td>
-                                            <button type="button" class="btn btn-success"
+                                            <button type="button" id="editNoteButton" class="btn btn-success"
                                                     th:attr="onclick=|showNoteModal(
                                              ${uploadNote.noteId},
                                             '${uploadNote.noteTitle}',
                                             '${uploadNote.noteDescription}')|">Edit</button>
 
-                                            <a class="btn btn-danger" th:href="@{/notes/delete/{noteTitle} (noteTitle = ${uploadNote.noteTitle})}">Delete</a>
+                                            <a id="deleteNoteButton" class="btn btn-danger" th:href="@{/notes/delete/{noteTitle} (noteTitle = ${uploadNote.noteTitle})}">Delete</a>
                                         </td>
-                                        <th scope="row" th:text="${uploadNote.getNoteTitle()}">Example Note Title</th>
-                                        <td th:text="${uploadNote.getNoteDescription()}">Example Note Description</td>
+                                        <th id="noteTitleList" scope="row" th:text="${uploadNote.getNoteTitle()}">Example Note Title</th>
+                                        <td id="noteDescriptionList" th:text="${uploadNote.getNoteDescription()}">Example Note Description</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -117,7 +117,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">Save changes</button>
+                                        <button id="saveNoteButton" type="button" class="btn btn-primary" onclick="$('#noteSubmit').click();">Save changes</button>
                                     </div>
                                 </div>
                             </div>
