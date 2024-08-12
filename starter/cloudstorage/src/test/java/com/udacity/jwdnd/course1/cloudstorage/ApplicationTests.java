@@ -22,7 +22,7 @@ class ApplicationTests {
 	@LocalServerPort
 	private int port;
 
-	private WebDriver driver;
+	private static WebDriver driver;
 
 	private String baseUrl;
 
