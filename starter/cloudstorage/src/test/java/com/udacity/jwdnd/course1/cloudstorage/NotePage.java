@@ -39,7 +39,9 @@ public class NotePage {
     @FindBy(id = "saveNoteButton")
     private WebElement saveNoteButton;
 
-
+    public int getSizeOfNoteList(){
+        return this.noteTitleList.size();
+    }
     public NotePage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
@@ -108,15 +110,6 @@ public class NotePage {
         wait.until(ExpectedConditions.elementToBeClickable(deleteNoteButton)).click();
     }
 
-    public int getSizeOfNoteList(){
-        return this.noteTitleList.size();
-    }
 
-    public List<WebElement> getNoteTitleList(){
-        return this.noteTitleList;
-    }
 
-    public List<WebElement> getNoteDescriptionList(){
-        return this.noteDescriptionList;
-    }
 }

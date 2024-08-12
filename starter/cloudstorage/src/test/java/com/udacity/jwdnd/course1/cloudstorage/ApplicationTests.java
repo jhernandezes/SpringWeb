@@ -6,7 +6,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,28 +35,23 @@ class ApplicationTests {
 	private LoginPage loginPage;
 	private HomePage homePage;
 	private NotePage notePage;
+	private CredentialPage credentialPage;
 
 
 	@BeforeAll
 	static void beforeAll() {
 		WebDriverManager.chromedriver().setup();
+		driver = new ChromeDriver();
 	}
 
 	@BeforeEach
 	public void beforeEach() {
-
-		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--headless");
-		options.addArguments("--disable-gpu");
-		options.addArguments("--no-sandbox");
-		options.addArguments("--disable-dev-shm-usage");
-		options.addArguments("--remote-debugging-port=9222");
-
-		this.driver = new ChromeDriver();
 		this.baseUrl = "http://localhost:" + port;
 		this.signUpPage = new SignUpPage(driver);
 		this.loginPage = new LoginPage(driver);
 		this.homePage = new HomePage(driver);
+		this.notePage = new NotePage(driver);
+		this.credentialPage = new CredentialPage(driver);
 	}
 
 	@AfterEach
@@ -192,7 +186,26 @@ class ApplicationTests {
 
 	}
 
+	@Test
+	@Order(6)
+	public void testCreateCredential(){
 
+		driver.get(baseUrl + "/login");
+		assertEquals("Login", driver.getTitle());
+
+		loginPage.loginAction(username, password);
+		driver.get(baseUrl + "/home");
+		WebDriverWait wait = new WebDriverWait(driver, 30);
+		wait.until(driver -> driver.findElement(By.id("nav-credentials-tab"))).click();
+		int sizeOfUrlList = this.credentialPage.getUrlText().size();
+
+		this.credentialPage.addNewCredentialAction(driver, "google.com", "username", "password"); // add new credential
+
+		driver.get(baseUrl + "/home");
+		wait.until(driver -> driver.findElement(By.id("nav-credentials-tab"))).click();
+		assertEquals(sizeOfUrlList + 1, this.credentialPage.getUrlText().size());
+	}
+	
 
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
