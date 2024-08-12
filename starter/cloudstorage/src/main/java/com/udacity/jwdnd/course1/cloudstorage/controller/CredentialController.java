@@ -1,6 +1,7 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
 import com.udacity.jwdnd.course1.cloudstorage.domain.Credential;
+import com.udacity.jwdnd.course1.cloudstorage.domain.Note;
 import com.udacity.jwdnd.course1.cloudstorage.domain.User;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.services.CredentialService;
@@ -31,6 +32,8 @@ public class CredentialController {
 
         List<Credential> credentialList = credentialService.getAllCredentials(user);
         model.addAttribute("credentialList", credentialList);
+        model.addAttribute("noteUpload", new Note());
+        model.addAttribute("credentialUpload", new Credential());
 
         return "home";
     }

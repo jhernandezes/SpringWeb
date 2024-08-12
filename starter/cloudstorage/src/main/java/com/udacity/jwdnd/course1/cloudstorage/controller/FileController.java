@@ -1,6 +1,8 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.domain.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.domain.File;
+import com.udacity.jwdnd.course1.cloudstorage.domain.Note;
 import com.udacity.jwdnd.course1.cloudstorage.domain.User;
 import com.udacity.jwdnd.course1.cloudstorage.mapper.UserMapper;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
@@ -42,6 +44,9 @@ public class FileController {
         List<File> files = fileService.getAllFiles(user);
 
         model.addAttribute("files", files);
+
+        model.addAttribute("noteUpload", new Note());
+        model.addAttribute("credentialUpload", new Credential());
 
         System.out.println("Total Files: " + files.size());
 

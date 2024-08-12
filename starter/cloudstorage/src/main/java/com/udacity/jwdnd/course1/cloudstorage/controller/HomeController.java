@@ -33,7 +33,7 @@ public class HomeController {
     }
 
     @GetMapping
-    public String home(Model model, Authentication authentication, Note noteUpload, Credential credentialUpload) {
+    public String home(Model model, Authentication authentication) {
 
         String username = authentication.getName();
 
@@ -52,8 +52,8 @@ public class HomeController {
         model.addAttribute("notes", notes);
         model.addAttribute("credentialList", credentialList);
 
-        model.addAttribute("noteUpload", noteUpload);
-        model.addAttribute("credentialUpload", credentialUpload);
+        model.addAttribute("noteUpload", new Note());
+        model.addAttribute("credentialUpload", new Credential());
 
         return "home";
     }
