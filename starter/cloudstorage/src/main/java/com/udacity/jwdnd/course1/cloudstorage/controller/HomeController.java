@@ -45,7 +45,7 @@ public class HomeController {
 
         // Decrypt password for view
         for (Credential credential : credentialList) {
-            credential.setPassword(credentialService.decryptPassword(credential));
+            credential.setDecryptedPassword(credentialService.decryptPassword(credential));
         }
 
         model.addAttribute("files", files);

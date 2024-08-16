@@ -155,7 +155,7 @@
                                         ${credential.credentialid},
                                         '${credential.url}',
                                         '${credential.username}',
-                                        '${credential.password}')|">Edit</button>
+                                        '${credential.decryptedPassword}')|">Edit</button>
 
                                         <a class="btn btn-danger" id="delete-btn-credential" th:href="@{/credentials/delete/{credentialId} (credentialId = ${credential.credentialid})}">Delete</a>
                                     </td>

@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -39,13 +40,14 @@ public class CredentialController {
     }
 
     @GetMapping("/delete/{credentialId}")
-    public String deleteCredential(@PathVariable("credentialId") Integer credentialId, Authentication authentication, Model model) {
+    public String deleteCredential(@PathVariable("credentialId") Integer credentialId, Authentication authentication, Model model, RedirectAttributes redirectAttributes) {
         credentialService.deleteCredential(credentialId);
+        redirectAttributes.addFlashAttribute("result", "Credential deleted successfully.");
         return "redirect:/home";
     }
 
     @PostMapping
-    public String handleCredentialUpload(Credential credentialUpload, Authentication authentication, Model model){
+    public String handleCredentialUpload(Credential credentialUpload, Authentication authentication, Model model, RedirectAttributes redirectAttributes){
 
         String username = authentication.getName();
         Integer userId = userMapper.getUser(username).getUserId();
@@ -54,9 +56,11 @@ public class CredentialController {
 
         if (credentialUpload.getCredentialid() != null){
             credentialService.updateCredential(credentialUpload);
+            redirectAttributes.addFlashAttribute("result", "Credential updated successfully.");
         }
         else {
             credentialService.addCredential(credentialUpload);
+            redirectAttributes.addFlashAttribute("result", "Credential created successfully.");
             model.addAttribute("credentialList", credentialUpload);
         }
 
