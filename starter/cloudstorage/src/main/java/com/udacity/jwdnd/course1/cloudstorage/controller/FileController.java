@@ -28,6 +28,7 @@ public class FileController {
 
     private final FileService fileService;
     private UserMapper userMapper;
+    private final long maxSize = 5 * 1024 * 1024;
 
     public FileController(FileService fileService, UserMapper userMapper) {
         this.fileService = fileService;
@@ -54,12 +55,15 @@ public class FileController {
     }
 
     @GetMapping("/delete/{fileName}")
-    public String deleteFiles(@PathVariable("fileName") String fileName, Model model, Authentication authentication) {
+    public String deleteFiles(@PathVariable("fileName") String fileName, Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
 
         String username = authentication.getName();
         Integer userId = this.userMapper.getUser(username).getUserId();
 
         fileService.deleteFile(fileName, userId);
+
+        redirectAttributes.addFlashAttribute("result", "File deleted successfully.");
+
         return "redirect:/home";
     }
 
@@ -78,7 +82,7 @@ public class FileController {
     }
 
     @PostMapping
-    public String handleFileUpload(Authentication authentication, @RequestParam("fileUpload") MultipartFile multipartFile, Model model)  {
+    public String handleFileUpload(Authentication authentication, @RequestParam("fileUpload") MultipartFile multipartFile, Model model, RedirectAttributes redirectAttributes)  {
 
         String username = authentication.getName();
 
@@ -89,24 +93,29 @@ public class FileController {
         String fileName = multipartFile.getOriginalFilename();
         String contentType = multipartFile.getContentType();
         long fileSize = multipartFile.getSize();
-        byte[] fileData;
-        try {
-            fileData = multipartFile.getBytes();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        if (fileName != null) {
-            if (fileService.getFile(fileName, userId) == null){
-                file.setFileName(fileName);
-                file.setFileSize(String.valueOf(fileSize));
-                file.setContentType(contentType);
-                file.setFiledata(fileData);
-                file.setUserId(userId);
-
-                this.fileService.addFile(file);
-                model.addAttribute("files", file);
+        if (fileSize < maxSize) {
+            byte[] fileData;
+            try {
+                fileData = multipartFile.getBytes();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        }
+            if (fileName != null && fileName != "") {
+                if (fileService.getFile(fileName, userId) == null) {
+                    file.setFileName(fileName);
+                    file.setFileSize(String.valueOf(fileSize));
+                    file.setContentType(contentType);
+                    file.setFiledata(fileData);
+                    file.setUserId(userId);
+                    redirectAttributes.addFlashAttribute("result", "File created successfully.");
+                    this.fileService.addFile(file);
+                    model.addAttribute("files", file);
+                } else
+                    redirectAttributes.addFlashAttribute("error", "File already exists.");
+            } else
+                redirectAttributes.addFlashAttribute("error", "Please select a file before submit.");
+        } else
+            redirectAttributes.addFlashAttribute("error", "Can't upload files over 5MB.");
 
         return "redirect:/home";
     }
