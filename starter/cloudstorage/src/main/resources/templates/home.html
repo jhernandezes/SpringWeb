@@ -8,6 +8,15 @@
 
         <title>Home</title>
     </head>
+
+    <div id="success-msg" th:if="${result}" class="alert alert-dark">
+        <p th:text="${result}"></p>
+    </div>
+
+    <div id="error-msg" th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+
     <body class="p-3 mb-2 bg-light text-black">
         <div class="container">
             <div id="logoutDiv">
