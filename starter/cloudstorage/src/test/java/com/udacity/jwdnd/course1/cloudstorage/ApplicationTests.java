@@ -126,6 +126,64 @@ class ApplicationTests {
 		});
 	}
 
+	@Test
+	@Order(4)
+	public void CRUDCredentials(){
+		driver.get("http://localhost:" + this.port + "/signup");
+
+		SignUpPage signUpPage = new SignUpPage(driver);
+		signUpPage.signUp(firstName, lastName, username, password);
+
+		LoginPage loginPage = new LoginPage(driver);
+		loginPage.login(username, password);
+
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("logout-button"))));
+
+		CredentialPage credentialPage = new CredentialPage(driver);
+
+		credentialPage.clickCredentialTab();
+
+		webDriverWait.until(ExpectedConditions.visibilityOf(credentialPage.getAddNewCredentialButton()));
+
+		credentialPage.clickAddNewCredentialButton();
+		webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(credentialPage.getSubmitButtonModal()));
+
+		credentialPage.createCredential("https://www.udacity.com/","admin","admin");
+
+		webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("logout-button"))));
+		credentialPage.clickCredentialTab();
+		webDriverWait.until(ExpectedConditions.visibilityOf(credentialPage.getAddNewCredentialButton()));
+
+		Assertions.assertEquals("https://www.udacity.com/", credentialPage.getCredentialUrlView());
+
+		credentialPage.clickEditCredentialButton();
+		webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(credentialPage.getSubmitButtonModal()));
+		credentialPage.editCredential("google.com", "flash", "temp");
+
+		webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("logout-button"))));
+		credentialPage.clickCredentialTab();
+
+		webDriverWait.until(ExpectedConditions.visibilityOf(credentialPage.getAddNewCredentialButton()));
+
+		Assertions.assertEquals("google.com", credentialPage.getCredentialUrlView());
+
+		credentialPage.clickDeleteCredentialButton();
+
+		Assertions.assertThrows(NoSuchElementException.class, () -> {
+			driver.findElement(By.id("credential-url-view"));
+		});
+
+
+
+
+
+	}
+
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
 	 * Helper method for Udacity-supplied sanity checks.

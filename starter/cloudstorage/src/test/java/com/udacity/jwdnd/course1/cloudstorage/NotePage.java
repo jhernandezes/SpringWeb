@@ -19,17 +19,11 @@ public class NotePage {
     @FindBy(id="add-new-note-button")
     private WebElement addNewNoteButton;
 
-    @FindBy(id="note-submit-button")
-    private WebElement noteSubmitButtonModal;
-
     @FindBy(id="modal-submit-button")
     private WebElement modalSubmitButtonModal;
 
     @FindBy(id="note-title-view")
     private WebElement noteTitleView;
-
-    @FindBy(id="note-description-view")
-    private WebElement noteDescriptionView;
 
     @FindBy(id="note-edit-button")
     private WebElement editNoteButton;
@@ -83,12 +77,5 @@ public class NotePage {
         return noteTitleView.getText();
     }
 
-    public String getNoteDescription() {
-        return noteDescriptionView.getText();
-    }
-
-    public WebElement getNoteTitleView(){
-        return noteTitleView;
-    }
 
 }
