@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -76,12 +77,54 @@ class ApplicationTests {
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
 
+	@Test
+	@Order(3)
+	public void createEditAndDeleteNote(){
+		driver.get("http://localhost:" + this.port + "/signup");
 
+		SignUpPage signUpPage = new SignUpPage(driver);
+		signUpPage.signUp(firstName, lastName, username, password);
 
+		LoginPage loginPage = new LoginPage(driver);
+		loginPage.login(username, password);
 
+		WebDriverWait webDriverWait = new WebDriverWait(driver, 5);
 
+		NotePage notePage = new NotePage(driver);
+		notePage.clickNoteTab();
+		webDriverWait.until(ExpectedConditions.visibilityOf(notePage.getAddNewNoteButton()));
 
+		notePage.clickAddNewNoteButton();
+		webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(notePage.getNoteSubmitButtonModal()));
 
+		notePage.createNote("Don Quijote", "Don Quijote de la Mancha es una novela moderna y la primera novela polifónica escrita por el español Miguel de Cervantes Saavedra");
+
+		webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("logout-button"))));
+		notePage.clickNoteTab();
+		webDriverWait.until(ExpectedConditions.visibilityOf(notePage.getAddNewNoteButton()));
+
+		Assertions.assertEquals("Don Quijote", notePage.getNoteTitle());
+
+		notePage.clickEditNoteButton();
+		webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(notePage.getNoteSubmitButtonModal()));
+		notePage.editNote("Sancho Panza", "Don Quijote de la Mancha es una novela moderna y la primera novela polifónica escrita por el español Miguel de Cervantes");
+
+		webDriverWait = new WebDriverWait(driver, 5);
+		webDriverWait.until(ExpectedConditions.visibilityOf(driver.findElement(By.id("logout-button"))));
+		notePage.clickNoteTab();
+		webDriverWait.until(ExpectedConditions.visibilityOf(notePage.getAddNewNoteButton()));
+
+		Assertions.assertEquals("Sancho Panza", notePage.getNoteTitle());
+
+		notePage.clickDeleteNoteButton();
+
+		Assertions.assertThrows(NoSuchElementException.class, () -> {
+			driver.findElement(By.id("note-title-view"));
+		});
+	}
 
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
