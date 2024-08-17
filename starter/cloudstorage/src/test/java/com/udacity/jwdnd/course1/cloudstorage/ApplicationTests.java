@@ -15,6 +15,11 @@ import java.io.File;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ApplicationTests {
 
+	private final String firstName = "David";
+	private final String lastName = "Mills";
+	private final String password = "seven";
+	private final String username = "dMills";
+
 	@LocalServerPort
 	private int port;
 
@@ -42,6 +47,41 @@ class ApplicationTests {
 		driver.get("http://localhost:" + this.port + "/login");
 		Assertions.assertEquals("Login", driver.getTitle());
 	}
+
+	@Test
+	@Order(1)
+	public void signUpRequired() {
+		driver.get("http://localhost:" + this.port + "/home");
+		Assertions.assertEquals("Login", driver.getTitle());
+	}
+
+	@Test
+	@Order(2)
+    public void signUpLoginRedirectToHomePageAndLogout(){
+		// SignUp
+		driver.get("http://localhost:" + this.port + "/signup");
+		SignUpPage signUpPage = new SignUpPage(driver);
+		signUpPage.signUp(firstName, lastName, username, password);
+		WebElement successMessage = driver.findElement(By.id("success-msg"));
+		Assertions.assertEquals("You successfully signed up!", successMessage.getText());
+
+		// Login and redirection to home page
+		LoginPage loginPage = new LoginPage(driver);
+		loginPage.login(username, password);
+		Assertions.assertEquals("Home", driver.getTitle());
+
+		// Logout
+		WebElement logoutButton = driver.findElement(By.id("logout-button"));
+		logoutButton.click();
+		Assertions.assertEquals("Login", driver.getTitle());
+	}
+
+
+
+
+
+
+
 
 	/**
 	 * PLEASE DO NOT DELETE THIS method.
